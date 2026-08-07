@@ -1,68 +1,124 @@
-# vms
+# Visitor Management System (VMS)
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Şirket içi ziyaretçi giriş-çıkış takibi, personel yönetimi ve raporlama için geliştirilmiş full-stack bir uygulama. Backend **Quarkus (reactive)**, frontend **Svelte + Vite** ile yazılmıştır.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Özellikler
 
-## Running the application in dev mode
+- **Ziyaretçi Yönetimi** — ziyaretçi check-in / check-out, aktif ziyaretçi listesi, çıkış loglama
+- **Personel Yönetimi** — şirket personelinin (ziyaret edilen kişilerin) kayıtlarının tutulması
+- **Kullanıcı Yönetimi** — sistem kullanıcıları ve rol ataması (sadece ADMIN)
+- **Raporlama** — en çok ziyaret edilen personel grafiği ve haftalık ziyaretçi trafiği grafiği
+- **Rol Bazlı Yetkilendirme** — JWT ile kimlik doğrulama, `ADMIN` ve `RECEPTIONIST` rolleri için farklı erişim seviyeleri
+- **Profil Yönetimi** — kullanıcının kendi profil bilgilerini görüntülemesi ve güncellemesi
 
-You can run your application in dev mode that enables live coding using:
+## Kullanılan Teknolojiler
 
-```shell script
+**Backend**
+- Quarkus (Supersonic Subatomic Java Framework)
+- Hibernate Reactive with Panache
+- Reactive PostgreSQL Client
+- SmallRye JWT (kimlik doğrulama / yetkilendirme)
+- Jakarta REST (JAX-RS)
+
+**Frontend**
+- Svelte 5 + Vite
+- Tailwind CSS
+- Chart.js (raporlama grafikleri)
+- svelte-spa-router
+
+## Proje Yapısı
+
+```
+vms/
+├── src/main/java/com/example/fullstack/
+│   ├── entity/       # Veritabanı varlıkları (User, Personal, Visitor)
+│   ├── dto/          # İstek/yanıt veri transfer nesneleri
+│   ├── resource/      # REST API uç noktaları
+│   └── service/       # İş mantığı
+├── src/main/resources/
+│   ├── application.properties
+│   └── META-INF/       # JWT imzalama anahtarları (repoda YOK, aşağıya bakın)
+└── frontend/
+    └── src/
+        ├── components/  # Svelte bileşenleri (Login, Sidebar, Yönetim ekranları)
+        ├── lib/         # API istemcisi ve JWT yardımcıları
+        └── stores/      # Svelte store'ları (auth durumu)
+```
+
+## Gereksinimler
+
+- JDK 17+
+- Maven (proje içindeki `mvnw` sarmalayıcısı yeterli, ayrıca kurmana gerek yok)
+- Node.js 18+ ve npm
+- PostgreSQL (yerel veya Docker üzerinde çalışan bir instance)
+
+## Kurulum
+
+### 1. Depoyu klonla
+
+```bash
+git clone https://github.com/furk4nece/Visitor-Managing-System.git
+cd Visitor-Managing-System
+```
+
+### 2. Veritabanı bağlantısını ayarla
+
+`src/main/resources/application.properties` dosyasını aç ve kendi PostgreSQL bilgilerinle doldur:
+
+```properties
+quarkus.datasource.reactive.url=postgresql://localhost:5433/vms
+quarkus.datasource.username=postgres
+quarkus.datasource.password=kendi_sifren
+```
+
+> Bu dosya `.gitignore` ile takip edilmediği için değişiklikleriniz repoya gitmez, güvenle doldurabilirsiniz.
+
+### 3. JWT anahtar çiftini oluştur
+
+Güvenlik nedeniyle `privateKey.pem` ve `publicKey.pem` dosyaları repoya dahil edilmemiştir. `src/main/resources/META-INF/` klasörü altına kendi anahtar çiftinizi oluşturup ekleyin:
+
+```bash
+openssl genrsa -out privateKey.pem 2048
+openssl rsa -pubout -in privateKey.pem -out publicKey.pem
+```
+
+### 4. Backend'i çalıştır
+
+```bash
 ./mvnw quarkus:dev
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+API `http://localhost:8080` adresinde ayağa kalkar. Dev UI: `http://localhost:8080/q/dev/`
 
-## Packaging and running the application
+### 5. Frontend'i çalıştır
 
-The application can be packaged using:
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-```shell script
+Uygulama `http://localhost:5173` adresinde açılır.
+
+## Rol Bazlı Yetkilendirme
+
+| Rol | Yetkiler |
+|---|---|
+| **ADMIN** | Tüm modüllere tam erişim (kullanıcı, personel, ziyaretçi ekleme/silme/güncelleme, raporları görüntüleme) |
+| **RECEPTIONIST** | Ziyaretçi check-in/check-out işlemleri, personel listesini **sadece görüntüleme**, raporları görüntüleme |
+
+## Derleme
+
+```bash
 ./mvnw package
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+Üretilen `quarkus-run.jar` dosyası şu şekilde çalıştırılır:
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+```bash
+java -jar target/quarkus-app/quarkus-run.jar
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+## Lisans
 
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/vms-1.0.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): Build RESTful web services and APIs using Jakarta REST (formerly JAX-RS)
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- Reactive PostgreSQL client ([guide](https://quarkus.io/guides/reactive-sql-clients)): Connect to the PostgreSQL database using the reactive pattern
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Bu proje bir staj çalışması kapsamında geliştirilmiştir.
