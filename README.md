@@ -5,10 +5,10 @@
 ## Özellikler
 
 - **Ziyaretçi Yönetimi** — ziyaretçi check-in / check-out, aktif ziyaretçi listesi, çıkış loglama
-- **Personel Yönetimi** — şirket personelinin (ziyaret edilen kişilerin) kayıtlarının tutulması
-- **Kullanıcı Yönetimi** — sistem kullanıcıları ve rol ataması (sadece ADMIN)
+- **Personel Yönetimi** — şirket personelinin (ziyaret edilen kişilerin) kayıtlarının tutulması, `ADMIN` ve `SUPER_ADMIN` için ekleme/düzenleme/silme
+- **Kullanıcı Yönetimi** — sistem kullanıcılarının listelenmesi, oluşturulması, düzenlenmesi ve silinmesi (`ADMIN` ve `SUPER_ADMIN`, yetki seviyesi role göre kademeli)
 - **Raporlama** — en çok ziyaret edilen personel grafiği ve haftalık ziyaretçi trafiği grafiği
-- **Rol Bazlı Yetkilendirme** — JWT ile kimlik doğrulama, `ADMIN` ve `RECEPTIONIST` rolleri için farklı erişim seviyeleri
+- **Rol Bazlı Yetkilendirme** — JWT ile kimlik doğrulama, `SUPER_ADMIN`, `ADMIN` ve `RECEPTIONIST` rolleri için farklı erişim seviyeleri
 - **Profil Yönetimi** — kullanıcının kendi profil bilgilerini görüntülemesi ve güncellemesi
 
 ## Kullanılan Teknolojiler
@@ -102,10 +102,31 @@ Uygulama `http://localhost:5173` adresinde açılır.
 
 ## Rol Bazlı Yetkilendirme
 
-| Rol | Yetkiler |
-|---|---|
-| **ADMIN** | Tüm modüllere tam erişim (kullanıcı, personel, ziyaretçi ekleme/silme/güncelleme, raporları görüntüleme) |
-| **RECEPTIONIST** | Ziyaretçi check-in/check-out işlemleri, personel listesini **sadece görüntüleme**, raporları görüntüleme |
+Sistemde üç rol bulunur: **SUPER_ADMIN**, **ADMIN**, **RECEPTIONIST**.
+
+### Ekran / işlem bazında erişim
+
+| Ekran / İşlem | SUPER_ADMIN | ADMIN | RECEPTIONIST |
+|---|:---:|:---:|:---:|
+| Ziyaretçiler (görüntüleme, check-in/check-out) | ✅ | ✅ | ✅ |
+| Personel — görüntüleme | ✅ | ✅ | ✅ |
+| Personel — ekleme / düzenleme / silme | ✅ | ✅ | ❌ |
+| Raporlar | ✅ | ✅ | ✅ |
+| Kullanıcılar — görüntüleme | ✅ | ✅ | ❌ |
+| Kullanıcılar — ekleme, düzenleme, silme | ✅ (aşağıya bakın) | ✅ (aşağıya bakın) | ❌ |
+| Kendi profilini görüntüleme / güncelleme | ✅ | ✅ | ✅ |
+
+### Kullanıcı yönetiminde rol bazlı kademe
+
+Kullanıcı ekleme/düzenleme/silme işlemleri, hedef kullanıcının rolüne göre kademeli olarak sınırlandırılmıştır:
+
+| İşlem | SUPER_ADMIN | ADMIN |
+|---|---|---|
+| Kullanıcı oluşturma | Her role (`RECEPTIONIST`, `ADMIN`, `SUPER_ADMIN`) sahip kullanıcı oluşturabilir | Sadece `RECEPTIONIST` rolüyle kullanıcı oluşturabilir |
+| Kullanıcı düzenleme | Herhangi bir kullanıcıyı, herhangi bir role atayabilir | Sadece mevcut rolü `RECEPTIONIST` olan kullanıcıları düzenleyebilir; bu kullanıcıyı `RECEPTIONIST` veya `ADMIN` yapabilir, `SUPER_ADMIN` yapamaz |
+| Kullanıcı silme | Kendisi hariç herkesi silebilir | Kendisi, başka bir `ADMIN` veya `SUPER_ADMIN` rolündeki kullanıcıları silemez; sadece `RECEPTIONIST` kullanıcıları silebilir |
+
+Bu kurallar hem backend'de (`UserService`) hem frontend'de (`KullaniciYonetimi.svelte`) uygulanmıştır; frontend arayüz elemanlarını role göre gizler, backend ise API seviyesinde aynı kuralları zorunlu kılar.
 
 ## Derleme
 
