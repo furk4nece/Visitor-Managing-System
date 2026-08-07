@@ -13,7 +13,7 @@ import jakarta.ws.rs.Path;
 import java.util.List;
 
 @Path("/api/v1/reports")
-@RolesAllowed({"ADMIN", "RECEPTIONIST"})
+@RolesAllowed({"ADMIN", "RECEPTIONIST", "SUPER_ADMIN"})
 public class ReportResource {
 
     private final ReportService reportService;

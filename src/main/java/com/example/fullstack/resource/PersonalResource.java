@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/api/v1/personals")
-@RolesAllowed({"ADMIN", "RECEPTIONIST"})
+@RolesAllowed({"ADMIN", "RECEPTIONIST" , "SUPER_ADMIN"})
 public class PersonalResource {
 
     private final PersonalService personalService;
@@ -47,7 +47,7 @@ public class PersonalResource {
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({"ADMIN", "SUPER_ADMIN"})
     public Uni<Response> create(@Valid PersonalRequest request) {
         return personalService.create(toEntity(request))
                 .map(created -> Response
@@ -59,7 +59,7 @@ public class PersonalResource {
     
     @PUT
     @Path("{id}")
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({"ADMIN", "SUPER_ADMIN"})
     @Consumes(MediaType.APPLICATION_JSON)
     public Uni<PersonalResponse> update(@PathParam("id") Long id, @Valid PersonalRequest request) {
         Personal personal = toEntity(request);
@@ -70,7 +70,7 @@ public class PersonalResource {
     
     @DELETE
     @Path("{id}")
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({"ADMIN", "SUPER_ADMIN"})
     public Uni<Response> delete(@PathParam("id") Long id) {
         return personalService.delete(id)
                 .map(v -> Response.noContent().build());

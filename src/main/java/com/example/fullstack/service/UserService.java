@@ -39,16 +39,45 @@ public class UserService {
 
     @WithTransaction
     public Uni<User> create(User user) {
+
+        boolean isSuperAdmin = securityIdentity
+                .hasRole("SUPER_ADMIN");
+
+        if (!isSuperAdmin && "ADMIN".equals(user.role)) {
+            return Uni.createFrom()
+                    .failure(new BadRequestException(
+                            "ADMIN kullanıcısı oluşturma yetkiniz yok."));
+        }
+
+        if (!isSuperAdmin && "SUPER_ADMIN".equals(user.role)) {
+            return Uni.createFrom()
+                    .failure(new BadRequestException(
+                            "SUPER_ADMIN kullanıcısı oluşturma yetkiniz yok."));
+        }
+
         user.setPassword(BcryptUtil.bcryptHash(user.getPassword()));
+
         return user.persistAndFlush();
     }
 
     @WithTransaction
     public Uni<User> update(Long id, User user) {
+
+        boolean isSuperAdmin = securityIdentity
+                .hasRole("SUPER_ADMIN");
+
         return findById(id)
                 .chain(existing -> {
-                    // Sadece username ve role güncelleniyor
-                    // Şifre bu metotla değiştirilemiyor (güvenlik)
+                    if (!isSuperAdmin) {
+                        if (!"RECEPTIONIST".equals(existing.role)) {
+                            return Uni.createFrom().failure(new BadRequestException(
+                                    "Bu kullanıcıyı düzenleme yetkiniz yok."));
+                        }
+                        if ("SUPER_ADMIN".equals(user.role)) {
+                            return Uni.createFrom().failure(new BadRequestException(
+                                    "Bu role atama yetkiniz yok."));
+                        }
+                    }
                     existing.username = user.username;
                     existing.role = user.role;
                     return existing.persistAndFlush();
@@ -57,8 +86,41 @@ public class UserService {
 
     @WithTransaction
     public Uni<Void> delete(Long id) {
+
+        String currentUsername = securityIdentity
+                .getPrincipal()
+                .getName();
+
+        boolean isSuperAdmin = securityIdentity
+                .hasRole("SUPER_ADMIN");
+
         return findById(id)
-                .chain(u -> u.delete());
+                .chain(user -> {
+
+                    if (user.username.equals(currentUsername)) {
+                        return Uni.createFrom()
+                                .failure(new BadRequestException(
+                                        "Kendi hesabınızı silemezsiniz."));
+                    }
+
+                    if (isSuperAdmin) {
+                        return user.delete();
+                    }
+
+                    if ("ADMIN".equals(user.role)) {
+                        return Uni.createFrom()
+                                .failure(new BadRequestException(
+                                        "Başka bir ADMIN kullanıcısını silemezsiniz."));
+                    }
+
+                    if ("SUPER_ADMIN".equals(user.role)) {
+                        return Uni.createFrom()
+                                .failure(new BadRequestException(
+                                        "SUPER_ADMIN kullanıcısını silemezsiniz."));
+                    }
+
+                    return user.delete();
+                });
     }
 
     @WithSession

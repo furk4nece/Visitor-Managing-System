@@ -104,9 +104,8 @@
 <div class="p-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold text-gray-800">Personel Yönetimi</h1>
-
     <div class="flex gap-3">
-      {#if $authStore.role === 'ADMIN'}
+      {#if $authStore.role === 'ADMIN' || $authStore.role === 'SUPER_ADMIN'}
         <button
           on:click={() => { formAcik = !formAcik; duzenlemeModuAcik = false; }}
           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
@@ -237,7 +236,7 @@
           <th class="p-4">Departman</th>
           <th class="p-4">Ünvan</th>
           <th class="p-4">Email</th>
-          <th class="p-4">İşlem</th>
+          {#if $authStore.role === 'ADMIN' || $authStore.role === 'SUPER_ADMIN'} <th class="p-4">İşlem</th> {/if}
         </tr>
       </thead>
       <tbody>
@@ -248,7 +247,7 @@
             <td class="p-4">{personel.tittle}</td>
             <td class="p-4">{personel.email}</td>
             <td class="p-4">
-              {#if $authStore.role === 'ADMIN'}
+              {#if $authStore.role === 'ADMIN' || $authStore.role === 'SUPER_ADMIN'}
                 <div class="flex gap-2">
                   <button
                     on:click={() => duzenlemeyiBaslat(personel)}

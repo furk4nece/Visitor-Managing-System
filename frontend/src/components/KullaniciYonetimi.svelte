@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
-  import { fetchUsers, createUser, deleteUser } from '../lib/api.js';
+  import { fetchUsers, createUser, updateUser, deleteUser } from '../lib/api.js';
+  import { authStore } from '../stores/authStore.js';
 
   let kullanicilar = [];
   let aramaMetni = '';
@@ -8,6 +9,9 @@
   let hata = '';
   let basari = '';
   let formAcik = false;
+
+  let duzenlemeModuAcik = false;
+  let duzenlenenKullanici = null;
 
   onMount(async () => {
     await kullanicilariYukle();
@@ -43,7 +47,42 @@
     }
   }
 
-  
+  function duzenlemeyiBaslat(kullanici) {
+    duzenlenenKullanici = {
+      id: kullanici.id,
+      username: kullanici.username,
+      role: kullanici.role
+    };
+    duzenlemeModuAcik = true;
+    formAcik = false;
+  }
+
+  async function kullaniciGuncelle() {
+    if (!duzenlenenKullanici.username) {
+      hata = 'Kullanıcı adı boş olamaz.';
+      return;
+    }
+    try {
+      const guncellenen = await updateUser(duzenlenenKullanici.id, {
+        username: duzenlenenKullanici.username,
+        role: duzenlenenKullanici.role
+      });
+      kullanicilar = kullanicilar.map(k => k.id === guncellenen.id ? guncellenen : k);
+      duzenlemeModuAcik = false;
+      duzenlenenKullanici = null;
+      hata = '';
+      basari = 'Kullanıcı güncellendi.';
+      setTimeout(() => basari = '', 3000);
+    } catch (e) {
+      hata = 'Kullanıcı güncellenemedi.';
+    }
+  }
+
+  function duzenlemeyiIptalEt() {
+    duzenlemeModuAcik = false;
+    duzenlenenKullanici = null;
+  }
+
   async function kullaniciSil(id) {
     if (!confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?')) return;
     try {
@@ -62,7 +101,7 @@
     <h1 class="text-2xl font-bold text-gray-800">Sistem Kullanıcıları</h1>
 
     <button
-      on:click={() => { formAcik = !formAcik}}
+      on:click={() => { formAcik = !formAcik; duzenlemeModuAcik = false; duzenlenenKullanici = null; }}
       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
       {formAcik ? 'İptal' : '+ Yeni Kullanıcı'}
     </button>
@@ -101,9 +140,14 @@
         <div>
           <label class="block text-sm text-gray-600 mb-1">Rol</label>
           <select
-            bind:value={yeniKullanici.role}
+            bind:value={duzenlenenKullanici.role}
             class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
-            <option value="ADMIN">ADMIN</option>
+            {#if $authStore.role === 'SUPER_ADMIN'}
+              <option value="ADMIN">ADMIN</option>
+              <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+            {:else if $authStore.role === 'ADMIN'}
+              <option value="ADMIN">ADMIN</option>
+            {/if}
             <option value="RECEPTIONIST">RECEPTIONIST</option>
           </select>
         </div>
@@ -113,6 +157,46 @@
         class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
         Kaydet
       </button>
+    </div>
+  {/if}
+    {#if duzenlemeModuAcik && duzenlenenKullanici}
+    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+      <h2 class="text-lg font-semibold mb-4 text-gray-700">Kullanıcı Düzenle</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">Kullanıcı Adı</label>
+          <input
+            bind:value={duzenlenenKullanici.username}
+            type="text"
+            class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">Rol</label>
+          <select
+            bind:value={duzenlenenKullanici.role}
+            class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-blue-500">
+            {#if $authStore.role === 'SUPER_ADMIN'}
+              <option value="ADMIN">ADMIN</option>
+              <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+            {:else if $authStore.role === 'ADMIN'}
+              <option value="ADMIN">ADMIN</option>
+            {/if}
+            <option value="RECEPTIONIST">RECEPTIONIST</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button
+          on:click={kullaniciGuncelle}
+          class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+          Kaydet
+        </button>
+        <button
+          on:click={duzenlemeyiIptalEt}
+          class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400">
+          İptal
+        </button>
+      </div>
     </div>
   {/if}
 
@@ -139,11 +223,19 @@
             <td class="p-4">{kullanici.fullName}</td>
             <td class="p-4">{kullanici.role}</td>
             <td class="p-4 flex gap-2">
-              <button
-                on:click={() => kullaniciSil(kullanici.id)}
-                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-                Sil
-              </button>
+              {#if $authStore.role === 'SUPER_ADMIN' ||
+                    ($authStore.role === 'ADMIN' && kullanici.role === 'RECEPTIONIST')}
+                <button
+                  on:click={() => duzenlemeyiBaslat(kullanici)}
+                  class="bg-amber-500 text-white px-3 py-1 rounded hover:bg-amber-600">
+                  Düzenle
+                </button>
+                <button
+                  on:click={() => kullaniciSil(kullanici.id)}
+                  class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                  Sil
+                </button>
+              {/if}
             </td>
           </tr>
         {:else}

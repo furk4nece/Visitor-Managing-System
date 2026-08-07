@@ -17,7 +17,7 @@ import com.example.fullstack.dto.user.UpdateProfileRequest;
 import java.util.List;
 
 @Path("/api/v1/users")
-@RolesAllowed("ADMIN")
+@RolesAllowed({"ADMIN", "SUPER_ADMIN"})
 public class UserResource {
 
     private final UserService userService;
@@ -41,14 +41,14 @@ public class UserResource {
 
     @GET
     @Path("me")
-    @RolesAllowed({"ADMIN", "RECEPTIONIST"})
+    @RolesAllowed({"ADMIN", "RECEPTIONIST", "SUPER_ADMIN"})
     public Uni<UserResponse> me() {
         return userService.getCurrentUser().map(UserResource::toResponse);
     }
 
     @PUT
     @Path("me")
-    @RolesAllowed({"ADMIN", "RECEPTIONIST"})
+    @RolesAllowed({"ADMIN", "RECEPTIONIST", "SUPER_ADMIN"})
     @Consumes(MediaType.APPLICATION_JSON)
     public Uni<UserResponse> updateMyProfile(
             @Valid UpdateProfileRequest request) {

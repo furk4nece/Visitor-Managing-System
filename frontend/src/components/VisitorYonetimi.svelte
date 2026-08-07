@@ -37,6 +37,16 @@
     return `${saat}:${dakika}:${saniye}`;
   }
 
+  function girisTarihiFormatla(entryTime) {
+    return new Date(entryTime).toLocaleString('tr-TR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
   async function ziyaretciEkle() {
     if (!yeniZiyaretci.fullName || !yeniZiyaretci.host) {
       hata = 'Lütfen zorunlu alanları eksiksiz doldurun.';
@@ -116,7 +126,7 @@
         <tr>
           <th class="p-4">Ziyaretçi</th>
           <th class="p-4">Kimi Görecek</th>
-          <th class="p-4">Süre</th>
+          <th class="p-4">Giriş Tarihi / Saati</th>
           <th class="p-4">İşlem</th>
         </tr>
       </thead>
@@ -125,7 +135,7 @@
           <tr class="border-t border-gray-200 hover:bg-gray-50">
             <td class="p-4">{ziyaretci.fullName}</td>
             <td class="p-4">{ziyaretci.host?.fullName}</td>
-            <td class="p-4">{sureHesapla(ziyaretci.entryTime)}</td>
+            <td class="p-4">{girisTarihiFormatla(ziyaretci.entryTime)}</td>
             <td class="p-4">
               <button
                 on:click={() => visitorCheckOut(ziyaretci.id)}

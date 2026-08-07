@@ -17,7 +17,7 @@
   </div>
   <nav class="flex-1 py-4">
     {#each menuItems as item}
-      {#if !item.adminOnly || $authStore.role === 'ADMIN'}
+      {#if !item.adminOnly || $authStore.role === 'ADMIN' || $authStore.role === 'SUPER_ADMIN'}
         <button
           on:click={() => push(item.path)}
           class="w-full text-left px-6 py-3 hover:bg-slate-700 {router.location === item.path ? 'bg-slate-700 border-l-4 border-blue-500' : 'border-l-4 border-transparent'}">

@@ -18,7 +18,7 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/api/v1/visitors")
-@RolesAllowed({"ADMIN", "RECEPTIONIST"})
+@RolesAllowed({"ADMIN", "RECEPTIONIST", "SUPER_ADMIN"})
 public class VisitorResource {
 
     private final VisitorService visitorService;
