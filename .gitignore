@@ -51,3 +51,30 @@ frontend/.svelte-kit/
 
 # Secrets
 *.pem
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# React frontend
+frontend-react/node_modules/
+frontend-react/dist/
+
+# Svelte frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.svelte-kit/
+
+# Maven
+target/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
