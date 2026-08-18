@@ -6,9 +6,9 @@ Proje; **Quarkus tabanlı REST API**, **PostgreSQL veritabanı** ve modern **Rea
 
 ---
 
-## 🚀 Özellikler
+##  Özellikler
 
-### 👤 Ziyaretçi Yönetimi
+###  Ziyaretçi Yönetimi
 
 - Ziyaretçi kaydı oluşturma
 - Ziyaretçi check-in işlemi
@@ -18,7 +18,7 @@ Proje; **Quarkus tabanlı REST API**, **PostgreSQL veritabanı** ve modern **Rea
 - Ziyaretçi giriş tarih ve saatlerinin takibi
 - Ziyaretçi kayıtlarının yönetilmesi
 
-### 👥 Personel Yönetimi
+###  Personel Yönetimi
 
 - Personel listesini görüntüleme
 - Personel ekleme
@@ -26,7 +26,7 @@ Proje; **Quarkus tabanlı REST API**, **PostgreSQL veritabanı** ve modern **Rea
 - Personel silme
 - Ziyaret edilecek personelin yönetimi
 
-### 🔐 Kullanıcı ve Yetkilendirme Sistemi
+###  Kullanıcı ve Yetkilendirme Sistemi
 
 Sistem JWT tabanlı kimlik doğrulama ve rol bazlı yetkilendirme kullanır.
 
@@ -38,7 +38,7 @@ Desteklenen roller:
 
 Her rolün sistem içerisindeki erişim yetkileri farklıdır.
 
-### 📊 Dashboard ve Raporlama
+###  Dashboard ve Raporlama
 
 Dashboard üzerinden:
 
@@ -50,11 +50,11 @@ Dashboard üzerinden:
 
 görüntülenebilir.
 
-### 👤 Profil Yönetimi
+###  Profil Yönetimi
 
 Kullanıcılar kendi profil bilgilerini görüntüleyebilir ve güncelleyebilir.
 
-### 🎨 Modern React Arayüzü
+###  Modern React Arayüzü
 
 Frontend aşağıdaki teknolojiler kullanılarak geliştirilmiştir:
 
@@ -70,7 +70,7 @@ Arayüzde tekrar kullanılabilir UI bileşenleri kullanılarak daha düzenli ve 
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+##  Kullanılan Teknolojiler
 
 ### Backend
 
@@ -98,7 +98,7 @@ Arayüzde tekrar kullanılabilir UI bileşenleri kullanılarak daha düzenli ve 
 
 ---
 
-## 🏗️ Proje Yapısı
+##  Proje Yapısı
 
 ```text
 Visitor-Managing-System/
@@ -139,7 +139,7 @@ Visitor-Managing-System/
 
 ---
 
-## ⚙️ Gereksinimler
+##  Gereksinimler
 
 Projeyi çalıştırmak için aşağıdaki yazılımların kurulu olması gerekir:
 
@@ -153,7 +153,7 @@ Maven ayrıca kurulmak zorunda değildir. Proje içerisinde Maven Wrapper bulunm
 
 ---
 
-# 📥 Kurulum
+#  Kurulum
 
 ## 1. Repository'yi klonla
 
@@ -210,7 +210,7 @@ oluşturulmalıdır.
 
 ---
 
-# ▶️ Backend'i çalıştırma
+#  Backend'i çalıştırma
 
 Proje ana dizinindeyken:
 
@@ -242,7 +242,7 @@ http://localhost:8080/q/dev/
 
 ---
 
-# ▶️ React Frontend'i çalıştırma
+#  React Frontend'i çalıştırma
 
 Yeni React frontend klasörüne geç:
 
@@ -272,7 +272,7 @@ adresinde çalışır.
 
 ---
 
-# 🔄 Backend - Frontend İletişimi
+#  Backend - Frontend İletişimi
 
 React frontend, backend REST API ile HTTP üzerinden iletişim kurar.
 
@@ -304,7 +304,7 @@ Axios client üzerinden JWT token kullanılarak authenticated API istekleri ger�
 
 ---
 
-# 🔐 Rol Bazlı Yetkilendirme
+#  Rol Bazlı Yetkilendirme
 
 Sistemde üç temel kullanıcı rolü bulunmaktadır:
 
@@ -353,7 +353,7 @@ Arayüzde role göre kullanıcıların erişebileceği sayfalar ve işlemler sı
 
 ---
 
-# 📌 API Yapısı
+#  API Yapısı
 
 Backend REST API aşağıdaki temel kaynaklar üzerinden çalışır:
 
@@ -374,7 +374,7 @@ API endpoint'leri JWT authentication ile korunmaktadır.
 
 ---
 
-# 🔒 Güvenlik
+#  Güvenlik
 
 Projede aşağıdaki güvenlik mekanizmaları kullanılmaktadır:
 
@@ -390,7 +390,7 @@ Projede aşağıdaki güvenlik mekanizmaları kullanılmaktadır:
 
 ---
 
-# 🧪 Build
+#  Build
 
 Backend'i production için build etmek:
 
@@ -425,7 +425,7 @@ npm run build
 
 ---
 
-# 🔮 Geliştirme Planı
+#  Geliştirme Planı
 
 Projeye ilerleyen aşamalarda aşağıdaki özelliklerin eklenmesi planlanmaktadır:
 
@@ -442,7 +442,7 @@ Projeye ilerleyen aşamalarda aşağıdaki özelliklerin eklenmesi planlanmaktad
 
 ---
 
-# 👨‍💻 Proje
+#  Proje
 
 Bu proje bir **staj çalışması** kapsamında geliştirilmiştir.
 
@@ -450,6 +450,6 @@ Amaç; modern web teknolojileri kullanılarak şirket içerisindeki ziyaretçi, 
 
 ---
 
-## 📄 Lisans
+##  Lisans
 
 Bu proje eğitim ve staj amacıyla geliştirilmiştir.
