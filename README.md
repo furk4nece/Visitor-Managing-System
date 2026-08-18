@@ -1,88 +1,172 @@
-# 🏢 Visitor Management System (VMS)
+# Visitor Management System (VMS)
 
-Şirket içi ziyaretçi giriş-çıkış takibi, personel yönetimi ve raporlama için geliştirilmiş full-stack bir uygulama.
+Visitor Management System (VMS), şirket ve kurumlarda ziyaretçi giriş-çıkış işlemlerini, personel yönetimini ve kullanıcı yetkilendirmelerini merkezi bir sistem üzerinden yönetmek amacıyla geliştirilmiş full-stack bir web uygulamasıdır.
 
-Backend **Quarkus (reactive)**, frontend **Svelte + Vite** ile yazılmıştır.
+Proje backend tarafında **Quarkus**, veritabanı olarak **PostgreSQL** kullanmaktadır.
 
-![Java](https://img.shields.io/badge/Java-17%2B-orange)
-![Quarkus](https://img.shields.io/badge/Quarkus-Reactive-blue)
-![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Reactive%20Client-336791)
-![License](https://img.shields.io/badge/license-Internship%20Project-lightgrey)
+Frontend tarafında projenin mevcut Svelte uygulamasının yanında, frontend modernizasyonu kapsamında geliştirilmeye başlanan **React + TypeScript** uygulaması da repository içerisinde bulunmaktadır.
+
+> **Frontend Migration:** Projenin mevcut frontend'i Svelte ile geliştirilmiştir. Yeni frontend geliştirmeleri React + TypeScript kullanılarak gerçekleştirilmektedir. Bu nedenle repository içerisinde hem `frontend` hem de `frontend-react` klasörleri bulunmaktadır.
 
 ---
 
-## 📑 İçindekiler
+## İçindekiler
 
-- [Özellikler](#-özellikler)
-- [Kullanılan Teknolojiler](#-kullanılan-teknolojiler)
-- [Proje Yapısı](#-proje-yapısı)
-- [Gereksinimler](#-gereksinimler)
-- [Kurulum](#-kurulum)
-- [Rol Bazlı Yetkilendirme](#-rol-bazlı-yetkilendirme)
-- [Derleme](#-derleme)
-- [Yol Haritası](#-yol-haritası)
-- [Katkıda Bulunma](#-katkıda-bulunma)
-- [Lisans](#-lisans)
-
----
-
-## ✨ Özellikler
-
-- 👥 **Ziyaretçi Yönetimi** — ziyaretçi check-in / check-out işlemleri, aktif ziyaretçi listesi, çıkış loglama
-- 🧑‍💼 **Personel Yönetimi** — şirket personelinin (ziyaret edilen kişilerin) kayıtlarının tutulması; `ADMIN` ve `SUPER_ADMIN` için ekleme / düzenleme / silme
-- 🔐 **Kullanıcı Yönetimi** — sistem kullanıcılarının listelenmesi, oluşturulması, düzenlenmesi ve silinmesi (`ADMIN` ve `SUPER_ADMIN`, yetki seviyesi role göre kademeli)
-- 📊 **Raporlama** — en çok ziyaret edilen personel grafiği ve haftalık ziyaretçi trafiği grafiği
-- 🛡️ **Rol Bazlı Yetkilendirme** — JWT ile kimlik doğrulama; `SUPER_ADMIN`, `ADMIN` ve `RECEPTIONIST` rolleri için farklı erişim seviyeleri
-- 👤 **Profil Yönetimi** — kullanıcının kendi profil bilgilerini görüntülemesi ve güncellemesi
+- [Özellikler](#özellikler)
+- [Kullanılan Teknolojiler](#kullanılan-teknolojiler)
+- [Proje Yapısı](#proje-yapısı)
+- [Gereksinimler](#gereksinimler)
+- [Kurulum](#kurulum)
+- [Rol Bazlı Yetkilendirme](#rol-bazlı-yetkilendirme)
+- [Derleme](#derleme)
+- [Yol Haritası](#yol-haritası)
+- [Katkıda Bulunma](#katkıda-bulunma)
+- [Lisans](#lisans)
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+## Özellikler
+
+### Ziyaretçi Yönetimi
+
+- Ziyaretçi kaydı oluşturma
+- Ziyaretçi giriş (Check-in) işlemi
+- Ziyaretçi çıkış (Check-out) işlemi
+- Aktif ziyaretçileri görüntüleme
+- Pasif ve geçmiş ziyaretçileri görüntüleme
+- Ziyaretçi giriş tarih ve saatlerini takip etme
+- Ziyaretçi kayıtlarını yönetme
+
+### Personel Yönetimi
+
+- Personel listesini görüntüleme
+- Personel ekleme
+- Personel bilgilerini düzenleme
+- Personel silme
+- Ziyaret edilecek personellerin yönetimi
+
+### Kullanıcı Yönetimi
+
+- Sistem kullanıcılarını görüntüleme
+- Kullanıcı oluşturma
+- Kullanıcı bilgilerini düzenleme
+- Kullanıcı silme
+- Rol bazlı kullanıcı yönetimi
+
+### Dashboard ve Raporlama
+
+- Aktif ziyaretçi takibi
+- Ziyaretçi girişlerinin görüntülenmesi
+- En çok ziyaret edilen personeller
+- Haftalık ziyaretçi trafiği
+- Grafik tabanlı raporlama
+
+### Rol Bazlı Yetkilendirme
+
+Sistemde üç temel kullanıcı rolü bulunmaktadır:
+
+- `SUPER_ADMIN`
+- `ADMIN`
+- `RECEPTIONIST`
+
+Her rolün erişebileceği ekranlar ve gerçekleştirebileceği işlemler farklıdır. Detaylar için [Rol Bazlı Yetkilendirme](#rol-bazlı-yetkilendirme) bölümüne bakınız.
+
+### Profil Yönetimi
+
+Kullanıcılar kendi profil bilgilerini görüntüleyebilir ve güncelleyebilir.
+
+---
+
+## Kullanılan Teknolojiler
 
 ### Backend
 
-| Teknoloji | Açıklama |
+| Teknoloji | Kullanım |
 |---|---|
-| **Quarkus** | Supersonic Subatomic Java Framework |
-| **Hibernate Reactive with Panache** | Reactive ORM katmanı |
-| **Reactive PostgreSQL Client** | Asenkron veritabanı erişimi |
-| **SmallRye JWT** | Kimlik doğrulama / yetkilendirme |
-| **Jakarta REST (JAX-RS)** | REST API katmanı |
+| Java | Backend geliştirme |
+| Quarkus | REST API ve uygulama altyapısı |
+| Hibernate Reactive with Panache | ORM |
+| Reactive PostgreSQL Client | Veritabanı bağlantısı |
+| PostgreSQL | Veritabanı |
+| SmallRye JWT | Authentication / Authorization |
+| Jakarta REST | REST API |
+| Maven | Build ve dependency yönetimi |
 
-### Frontend
+### Svelte Frontend (`frontend/`)
 
-| Teknoloji | Açıklama |
-|---|---|
-| **Svelte 5 + Vite** | UI framework ve build aracı |
-| **Tailwind CSS** | Stil / tasarım sistemi |
-| **Chart.js** | Raporlama grafikleri |
-| **svelte-spa-router** | İstemci taraflı yönlendirme |
+Mevcut frontend uygulamasında:
+
+- Svelte 5
+- Vite
+- Tailwind CSS
+- Chart.js
+- svelte-spa-router
+
+kullanılmaktadır.
+
+### React Frontend (`frontend-react/`)
+
+Yeni frontend geliştirmesinde:
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Axios
+- React Router
+- JWT Authentication
+
+kullanılmaktadır.
 
 ---
 
-## 📁 Proje Yapısı
+## Proje Yapısı
 
-```
-vms/
-├── src/main/java/com/example/fullstack/
-│   ├── entity/         # Veritabanı varlıkları (User, Personal, Visitor)
-│   ├── dto/             # İstek/yanıt veri transfer nesneleri
-│   ├── resource/        # REST API uç noktaları
-│   └── service/         # İş mantığı
-├── src/main/resources/
-│   ├── application.properties
-│   └── META-INF/         # JWT imzalama anahtarları (repoda YOK, aşağıya bakın)
-└── frontend/
-    └── src/
-        ├── components/   # Svelte bileşenleri (Login, Sidebar, Yönetim ekranları)
-        ├── lib/          # API istemcisi ve JWT yardımcıları
-        └── stores/       # Svelte store'ları (auth durumu)
+```text
+Visitor-Managing-System/
+│
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/example/fullstack/
+│       │       ├── entity/       # Veritabanı varlıkları (User, Personal, Visitor)
+│       │       ├── dto/          # İstek/yanıt veri transfer nesneleri
+│       │       ├── resource/     # REST API uç noktaları
+│       │       └── service/      # İş mantığı
+│       │
+│       └── resources/
+│           ├── application.properties
+│           └── META-INF/         # JWT imzalama anahtarları (repoda YOK, aşağıya bakın)
+│
+├── frontend/                     # Svelte istemcisi
+│   └── src/
+│       ├── components/           # Svelte bileşenleri (Login, Sidebar, Yönetim ekranları)
+│       ├── lib/                  # API istemcisi ve JWT yardımcıları
+│       └── stores/               # Svelte store'ları (auth durumu)
+│
+├── frontend-react/                # React istemcisi
+│   ├── public/
+│   ├── src/
+│   │   ├── components/            # React bileşenleri
+│   │   ├── pages/                 # Sayfa bileşenleri
+│   │   ├── context/                # React context (auth durumu)
+│   │   └── ...
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.ts
+│
+├── .mvn/
+├── .dockerignore
+├── .gitignore
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+└── README.md
 ```
 
 ---
 
-## ✅ Gereksinimler
+## Gereksinimler
 
 - JDK 17+
 - Maven (proje içindeki `mvnw` sarmalayıcısı yeterli, ayrıca kurmana gerek yok)
@@ -91,7 +175,7 @@ vms/
 
 ---
 
-## 🚀 Kurulum
+## Kurulum
 
 ### 1. Depoyu klonla
 
@@ -110,7 +194,7 @@ quarkus.datasource.username=postgres
 quarkus.datasource.password=kendi_sifren
 ```
 
-> ℹ️ Bu dosya `.gitignore` ile takip edilmediği için değişiklikleriniz repoya gitmez, güvenle doldurabilirsiniz.
+> Bu dosya `.gitignore` ile takip edilmediği için değişiklikleriniz repoya gitmez, güvenle doldurabilirsiniz.
 
 ### 3. JWT anahtar çiftini oluştur
 
@@ -132,17 +216,29 @@ openssl rsa -pubout -in privateKey.pem -out publicKey.pem
 
 ### 5. Frontend'i çalıştır
 
+İki frontend de aynı portta çalıştığı için **aynı anda değil, tek seferde birini** ayağa kaldırman gerekir.
+
+**Seçenek A — Svelte (`frontend/`):**
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Uygulama `http://localhost:5173` adresinde açılır.
+**Seçenek B — React (`frontend-react/`):**
+
+```bash
+cd frontend-react
+npm install
+npm run dev
+```
+
+Hangisini seçersen seç, uygulama aynı backend API'sine (`http://localhost:8080`) bağlanır.
 
 ---
 
-## 🔐 Rol Bazlı Yetkilendirme
+## Rol Bazlı Yetkilendirme
 
 Sistemde üç rol bulunur: **SUPER_ADMIN**, **ADMIN**, **RECEPTIONIST**.
 
@@ -168,11 +264,13 @@ Kullanıcı ekleme/düzenleme/silme işlemleri, hedef kullanıcının rolüne g�
 | Kullanıcı düzenleme | Herhangi bir kullanıcıyı, herhangi bir role atayabilir | Sadece mevcut rolü `RECEPTIONIST` olan kullanıcıları düzenleyebilir; bu kullanıcıyı `RECEPTIONIST` veya `ADMIN` yapabilir, `SUPER_ADMIN` yapamaz |
 | Kullanıcı silme | Kendisi hariç herkesi silebilir | Kendisi, başka bir `ADMIN` veya `SUPER_ADMIN` rolündeki kullanıcıları silemez; sadece `RECEPTIONIST` kullanıcıları silebilir |
 
-Bu kurallar hem backend'de (`UserService`) hem frontend'de (`KullaniciYonetimi.svelte`) uygulanmıştır; frontend arayüz elemanlarını role göre gizler, backend ise API seviyesinde aynı kuralları zorunlu kılar.
+Bu kurallar hem backend'de (`UserService`) hem her iki frontend'de de uygulanmıştır; frontend arayüz elemanlarını role göre gizler, backend ise API seviyesinde aynı kuralları zorunlu kılar.
 
 ---
 
-## 📦 Derleme
+## Derleme
+
+### Backend
 
 ```bash
 ./mvnw package
@@ -184,10 +282,27 @@ Bu kurallar hem backend'de (`UserService`) hem frontend'de (`KullaniciYonetimi.s
 java -jar target/quarkus-app/quarkus-run.jar
 ```
 
+### Frontend
+
+**Svelte:**
+
+```bash
+cd frontend
+npm run build
+```
+
+**React:**
+
+```bash
+cd frontend-react
+npm run build
+```
+
 ---
 
-## 🗺️ Yol Haritası
+## Yol Haritası
 
+- [ ] React + TypeScript frontend'in tamamlanması ve Svelte frontend'in yerini alması
 - [ ] Docker Compose ile tek komutla ayağa kaldırma
 - [ ] E-posta bildirimleri (ziyaretçi check-in bildirimi)
 - [ ] Ziyaretçi fotoğrafı / QR kod ile check-in
@@ -197,7 +312,7 @@ java -jar target/quarkus-app/quarkus-run.jar
 
 ---
 
-## 🤝 Katkıda Bulunma
+## Katkıda Bulunma
 
 Katkılar memnuniyetle karşılanır!
 
@@ -209,6 +324,6 @@ Katkılar memnuniyetle karşılanır!
 
 ---
 
-## 📄 Lisans
+## Lisans
 
 Bu proje bir staj çalışması kapsamında geliştirilmiştir.
