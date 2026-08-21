@@ -60,6 +60,7 @@ Frontend tarafında projenin mevcut Svelte uygulamasının yanında, frontend mo
 - En çok ziyaret edilen personeller
 - Haftalık ziyaretçi trafiği
 - Grafik tabanlı raporlama
+- Raporlamaların Excel'e çekilmesi
 
 ### Rol Bazlı Yetkilendirme
 
